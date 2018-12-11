@@ -10,8 +10,22 @@ var input = {
     pwd: 585878
 }
 
+var dumyObj =  [{
+        name: 'Sourabh Nihore',
+        email: 'souravnihore@gmail.com',
+        pwd: 585878
+    },
+    {
+        name: 'Tinku Nihore',
+        email: 'nihores@gmail.com',
+        pwd: 585878
+    }]
+
+
 beforeEach((done)=>{
-    SinUp.remove({}).then(()=>done());
+    SinUp.remove({}).then(()=>{
+        SinUp.insertMany(dumyObj).then(()=>done());
+    });
 });
 
 describe('POST /sinup', ()=>{
@@ -32,10 +46,10 @@ describe('POST /sinup', ()=>{
                     return done(err);
                 }
                 SinUp.find().then((docs)=>{
-                    expect(docs.length).toBe(1);
-                    expect(docs[0].name).toBe(input.name);
-                    expect(docs[0].email).toBe(input.email);
-                    expect(docs[0].pwd).toBe(input.pwd);
+                    expect(docs.length).toBe(3);
+                    expect(docs[2].name).toBe(input.name);
+                    expect(docs[2].email).toBe(input.email);
+                    expect(docs[2].pwd).toBe(input.pwd);
                     done();
                 }).catch((e)=>done(e));
             });
@@ -52,7 +66,7 @@ it('should test for bad request', (done)=>{
                 return done(err);
             }
             SinUp.find().then((docs)=>{
-                expect(docs.length).toBe(0);
+                expect(docs.length).toBe(2);
                 done();
             }).catch((e)=>done(e));
         });
@@ -64,7 +78,9 @@ describe('GET /sinup', ()=>{
             .get('/sinup')
             .expect(200)
             .expect((res)=>{
-                expect(res.body).toEqual({});
+                expect(res.body.docs.length).toBe(2);
+                expect(res.body.docs[0].name).toEqual(dumyObj[0].name);
+                expect(res.body.docs[1].email).toEqual(dumyObj[1].email);
                 // console.log(res.body);
             })
             .end((err, res)=>{
