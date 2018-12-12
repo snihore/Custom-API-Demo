@@ -9,6 +9,8 @@ const {SinUp} = require('./models/sinup');
 
 var app = express();
 
+const port = process.env.PORT || 3000;
+
 app.use(bodyParser.json());
 
 app.post('/sinup', (req, res)=>{
@@ -61,8 +63,8 @@ app.get('/sinup/:id', (req, res)=>{
     
 });
 
-app.listen(3000, ()=>{
-    console.log(`Listen on Port 3000`);
+app.listen(port, ()=>{
+    console.log(`Listen on Port ${port}`);
 });
 
 module.exports = {app};
