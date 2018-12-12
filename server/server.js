@@ -63,6 +63,39 @@ app.get('/sinup/:id', (req, res)=>{
     
 });
 
+/// delete individual item request
+app.delete('/sinup/:id', (req, res)=>{
+    var id = req.params.id;
+    if(!ObjectID.isValid(id)){
+        return res.sendStatus(404);
+    }
+
+    SinUp.findByIdAndDelete(id).then((doc)=>{
+        if(!doc){
+            return res.sendStatus(404);
+        }
+
+        res.send({doc});
+    }).catch((e)=>{
+        res.sendStatus(400);
+    });
+});
+
+
+app.patch('/sinup/:id', (req, res)=>{
+    var id = req.params.id;
+    var body = req.body;
+    if(!ObjectID.isValid(id)){
+        return res.sendStatus(404);
+    }
+
+    SinUp.findByIdAndUpdate(id, {$set: body}, {new: true}).then((result)=>{
+        res.send({doc: result});
+    }).catch((e)=>{
+        res.sendStatus(400);
+    });
+});
+
 app.listen(port, ()=>{
     console.log(`Listen on Port ${port}`);
 });
