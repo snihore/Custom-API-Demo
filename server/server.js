@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+const {ObjectID} = require('mongodb');
 const {mongoose} = require('./db/mongoose-conf');
 const {SinUp} = require('./models/sinup');
 
@@ -38,6 +39,26 @@ app.get('/sinup', (req, res)=>{
     }).catch((e)=>{
         console.log(e);
     });
+});
+
+/// Get individual item
+app.get('/sinup/:id', (req, res)=>{
+    var id = req.params.id;
+
+    if(!ObjectID.isValid(id)){
+        return res.sendStatus(404);
+    }
+
+    SinUp.findById(id).then((doc)=>{
+        if(!doc){
+            return res.sendStatus(404);
+        }
+
+        res.send({doc});
+    }).catch((e)=>{
+        res.sendStatus(400);
+    });
+    
 });
 
 app.listen(3000, ()=>{

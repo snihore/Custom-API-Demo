@@ -1,6 +1,7 @@
 const expect = require('expect');
 const request = require('supertest');
 
+const {ObjectID} = require('mongodb');
 const {app} = require('./../server');
 const {SinUp} = require('./../models/sinup');
 
@@ -11,11 +12,15 @@ var input = {
 }
 
 var dumyObj =  [{
+
+        _id: new ObjectID,
         name: 'Sourabh Nihore',
         email: 'souravnihore@gmail.com',
         pwd: 585878
     },
     {
+
+        _id: new ObjectID,
         name: 'Tinku Nihore',
         email: 'nihores@gmail.com',
         pwd: 585878
@@ -89,6 +94,32 @@ describe('GET /sinup', ()=>{
                 }
                 done();
             });
+    });
+});
+
+
+describe('GET /sinup/:id', ()=>{
+    it('should test individual get request', (done)=>{
+        request(app)
+            .get(`/sinup/${dumyObj[0]._id}`)
+            .expect(200)
+            .expect((res)=>{
+                expect(res.body.doc._id).toBe(dumyObj[0]._id.toHexString());
+            })
+            .end(done);
+    });
+
+    it('should test individual get invalid request', (done)=>{
+        request(app)
+            .get(`/sinup/123`)
+            .expect(404)
+            .end(done);
+    });
+    it('should test individual get unkown request', (done)=>{
+        request(app)
+            .get(`/sinup/5c10dee294be0d1edcadff85`)
+            .expect(404)
+            .end(done);
     });
 });
 
